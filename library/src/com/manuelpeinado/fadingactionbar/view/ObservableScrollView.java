@@ -4,12 +4,12 @@ package com.manuelpeinado.fadingactionbar.view;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.widget.ScrollView;
+
 
 /**
  * @author Cyril Mottier with modifications from Manuel Peinado
  */
-public class ObservableScrollView extends ScrollView implements ObservableScrollable {
+public class ObservableScrollView extends StickyScrollView implements ObservableScrollable {
     // Edge-effects don't mix well with the translucent action bar in Android 2.X
     private boolean mDisableEdgeEffects = true;
 
@@ -26,6 +26,8 @@ public class ObservableScrollView extends ScrollView implements ObservableScroll
     public ObservableScrollView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
+
+
 
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {

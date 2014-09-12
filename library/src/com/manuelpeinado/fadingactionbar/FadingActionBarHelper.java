@@ -47,4 +47,9 @@ public class FadingActionBarHelper extends FadingActionBarHelperBase {
     protected void setActionBarBackgroundDrawable(Drawable drawable) {
         mActionBar.setBackgroundDrawable(drawable);
     }
+
+    @Override
+    public int getOffset() {
+        return mActionBar == null ? 0 : mActionBar.getHeight();
+    }
 }

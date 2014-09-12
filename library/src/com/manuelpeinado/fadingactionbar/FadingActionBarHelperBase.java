@@ -37,10 +37,12 @@ import android.widget.ListView;
 
 import com.manuelpeinado.fadingactionbar.view.ObservableScrollView;
 import com.manuelpeinado.fadingactionbar.view.ObservableWebViewWithHeader;
+import com.manuelpeinado.fadingactionbar.view.OffsetMeasure;
 import com.manuelpeinado.fadingactionbar.view.OnScrollChangedCallback;
+import com.manuelpeinado.fadingactionbar.view.RootLayout;
 
 @SuppressWarnings("unchecked")
-public abstract class FadingActionBarHelperBase {
+public abstract class FadingActionBarHelperBase implements OffsetMeasure {
     protected static final String TAG = "FadingActionBarHelper";
     private Drawable mActionBarBackgroundDrawable;
     private FrameLayout mHeaderContainer;
@@ -59,6 +61,10 @@ public abstract class FadingActionBarHelperBase {
     private boolean mFirstGlobalLayoutPerformed;
     private FrameLayout mMarginView;
     private View mListViewBackgroundView;
+
+    private RootLayout rootLayout;
+
+    protected ObservableScrollView mScrollView;
 
     public final <T extends FadingActionBarHelperBase> T actionBarBackground(int drawableResId) {
         mActionBarBackgroundResId = drawableResId;
@@ -163,6 +169,8 @@ public abstract class FadingActionBarHelperBase {
                 }
             }
         });
+
+        rootLayout = (RootLayout) root;
         return root;
     }
 
@@ -175,6 +183,12 @@ public abstract class FadingActionBarHelperBase {
             mActionBarBackgroundDrawable.setCallback(mDrawableCallback);
         }
         mActionBarBackgroundDrawable.setAlpha(0);
+        mScrollView.setOffsetMeasure(this);
+
+    }
+
+    public void reset() {
+        rootLayout.reset();
     }
 
     protected abstract int getActionBarHeight();
@@ -238,9 +252,8 @@ public abstract class FadingActionBarHelperBase {
     private View createScrollView() {
         ViewGroup scrollViewContainer = (ViewGroup) mInflater.inflate(R.layout.fab__scrollview_container, null);
 
-        ObservableScrollView scrollView = (ObservableScrollView) scrollViewContainer.findViewById(R.id.fab__scroll_view);
-        scrollView.setOnScrollChangedCallback(mOnScrollChangedListener);
-
+        mScrollView = (ObservableScrollView) scrollViewContainer.findViewById(R.id.fab__scroll_view);
+        mScrollView.setOnScrollChangedCallback(mOnScrollChangedListener);
         ViewGroup contentContainer = (ViewGroup) scrollViewContainer.findViewById(R.id.fab__container);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
         		LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);

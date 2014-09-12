@@ -25,6 +25,10 @@ public class RootLayout extends FrameLayout {
         super(context, attrs, defStyle);
     }
 
+    public void reset() {
+        mInitialized = false;
+    }
+
     protected void onLayout (boolean changed, int left, int top, int right, int bottom) {
         //at first find headerViewContainer and listViewBackground
         if (mHeaderContainer == null)

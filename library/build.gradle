@@ -1,4 +1,4 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion Integer.parseInt(project.ANDROID_COMPILE_SDK_VERSION)
@@ -18,6 +18,11 @@ android {
             res.srcDirs = ['res']
         }
     }
+
 }
 
-apply from: '../maven_push.gradle'
+dependencies {
+    //compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
+}
+
+//apply from: '../maven_push.gradle'

@@ -21,6 +21,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 
 import com.manuelpeinado.fadingactionbar.FadingActionBarHelperBase;
+import com.manuelpeinado.fadingactionbar.view.OffsetMeasure;
 
 public final class FadingActionBarHelper extends FadingActionBarHelperBase {
 
@@ -57,5 +58,10 @@ public final class FadingActionBarHelper extends FadingActionBarHelperBase {
     @Override
     protected void setActionBarBackgroundDrawable(Drawable drawable) {
         mActionBar.setBackgroundDrawable(drawable);
+    }
+
+    @Override
+    public int getOffset() {
+        return mActionBar == null ? 0 : mActionBar.getHeight();
     }
 }
