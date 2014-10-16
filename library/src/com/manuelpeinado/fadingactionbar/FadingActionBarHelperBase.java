@@ -68,52 +68,52 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
 
     public final <T extends FadingActionBarHelperBase> T actionBarBackground(int drawableResId) {
         mActionBarBackgroundResId = drawableResId;
-        return (T)this;
+        return (T) this;
     }
 
     public final <T extends FadingActionBarHelperBase> T actionBarBackground(Drawable drawable) {
         mActionBarBackgroundDrawable = drawable;
-        return (T)this;
+        return (T) this;
     }
 
     public final <T extends FadingActionBarHelperBase> T headerLayout(int layoutResId) {
         mHeaderLayoutResId = layoutResId;
-        return (T)this;
+        return (T) this;
     }
 
     public final <T extends FadingActionBarHelperBase> T headerView(View view) {
         mHeaderView = view;
-        return (T)this;
+        return (T) this;
     }
 
     public final <T extends FadingActionBarHelperBase> T headerOverlayLayout(int layoutResId) {
         mHeaderOverlayLayoutResId = layoutResId;
-        return (T)this;
+        return (T) this;
     }
 
     public final <T extends FadingActionBarHelperBase> T headerOverlayView(View view) {
         mHeaderOverlayView = view;
-        return (T)this;
+        return (T) this;
     }
 
     public final <T extends FadingActionBarHelperBase> T contentLayout(int layoutResId) {
         mContentLayoutResId = layoutResId;
-        return (T)this;
+        return (T) this;
     }
 
-    public final <T extends FadingActionBarHelperBase> T  contentView(View view) {
+    public final <T extends FadingActionBarHelperBase> T contentView(View view) {
         mContentView = view;
-        return (T)this;
+        return (T) this;
     }
 
     public final <T extends FadingActionBarHelperBase> T lightActionBar(boolean value) {
         mLightActionBar = value;
-        return (T)this;
+        return (T) this;
     }
 
-    public final <T extends FadingActionBarHelperBase> T  parallax(boolean value) {
+    public final <T extends FadingActionBarHelperBase> T parallax(boolean value) {
         mUseParallax = value;
-        return (T)this;
+        return (T) this;
     }
 
     public final View createView(Context context) {
@@ -128,9 +128,6 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
         if (mContentView == null) {
             mContentView = inflater.inflate(mContentLayoutResId, null);
         }
-        if (mHeaderView == null) {
-            mHeaderView = inflater.inflate(mHeaderLayoutResId, null, false);
-        }
 
         //
         // See if we are in a ListView, WebView or ScrollView scenario
@@ -139,7 +136,7 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
         View root;
         if (listView != null) {
             root = createListView(listView);
-        } else if (mContentView instanceof ObservableWebViewWithHeader){
+        } else if (mContentView instanceof ObservableWebViewWithHeader) {
             root = createWebView();
         } else {
             root = createScrollView();
@@ -192,13 +189,15 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
     }
 
     protected abstract int getActionBarHeight();
+
     protected abstract boolean isActionBarNull();
+
     protected abstract void setActionBarBackgroundDrawable(Drawable drawable);
 
     protected <T> T getActionBarWithReflection(Activity activity, String methodName) {
         try {
             Method method = activity.getClass().getMethod(methodName);
-            return (T)method.invoke(activity);
+            return (T) method.invoke(activity);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
@@ -208,11 +207,11 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (ClassCastException e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }
-    
+
     private Drawable.Callback mDrawableCallback = new Drawable.Callback() {
         @Override
         public void invalidateDrawable(Drawable who) {
@@ -238,7 +237,7 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
 
         mHeaderContainer = (FrameLayout) webViewContainer.findViewById(R.id.fab__header_container);
         initializeGradient(mHeaderContainer);
-        mHeaderContainer.addView(mHeaderView, 0);
+        addHeaderView(mHeaderContainer, mHeaderLayoutResId);
 
         mMarginView = new FrameLayout(webView.getContext());
         mMarginView.setBackgroundColor(Color.TRANSPARENT);
@@ -256,12 +255,12 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
         mScrollView.setOnScrollChangedCallback(mOnScrollChangedListener);
         ViewGroup contentContainer = (ViewGroup) scrollViewContainer.findViewById(R.id.fab__container);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-        		LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mContentView.setLayoutParams(layoutParams);
         contentContainer.addView(mContentView);
         mHeaderContainer = (FrameLayout) scrollViewContainer.findViewById(R.id.fab__header_container);
         initializeGradient(mHeaderContainer);
-        mHeaderContainer.addView(mHeaderView, 0);
+        addHeaderView(mHeaderContainer, mHeaderLayoutResId);
         mMarginView = (FrameLayout) contentContainer.findViewById(R.id.fab__content_top_margin);
 
         return scrollViewContainer;
@@ -279,7 +278,7 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
 
         mHeaderContainer = (FrameLayout) contentContainer.findViewById(R.id.fab__header_container);
         initializeGradient(mHeaderContainer);
-        mHeaderContainer.addView(mHeaderView, 0);
+        addHeaderView(mHeaderContainer, mHeaderLayoutResId);
 
         mMarginView = new FrameLayout(listView.getContext());
         mMarginView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, 0));
@@ -368,5 +367,12 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
             gradient = R.drawable.fab__gradient_light;
         }
         gradientView.setBackgroundResource(gradient);
+    }
+
+    private void addHeaderView(ViewGroup headerContainer, int headerLayoutResId) {
+        if (mHeaderView == null) {
+            mHeaderView = mInflater.inflate(headerLayoutResId, headerContainer, false);
+        }
+        headerContainer.addView(mHeaderView, 0);
     }
 }
