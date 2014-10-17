@@ -18,6 +18,8 @@ package com.manuelpeinado.fadingactionbar.samples.actionbarcompat;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 
 import com.manuelpeinado.fadingactionbar.extras.actionbarcompat.FadingActionBarHelper;
 import com.manuelpeinado.fadingactionbar.samples.actionbarcompat.R;
@@ -34,6 +36,17 @@ public class ScrollViewActivity extends ActionBarActivity {
             .contentLayout(R.layout.activity_scrollview);
         setContentView(helper.createView(this));
         helper.initActionBar(this);
+        final TextView top = (TextView) findViewById(R.id.top_text);
+        final TextView bottom = (TextView) findViewById(R.id.bottom_text);
+        top.setText(top.getText().subSequence(0, 500));
+        bottom.setText(bottom.getText().subSequence(0, 500));
+        findViewById(R.id.toggle).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                top.setVisibility(top.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+            }
+        });
+
     }
 
     @Override
