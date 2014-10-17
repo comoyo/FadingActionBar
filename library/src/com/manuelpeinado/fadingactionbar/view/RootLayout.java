@@ -12,6 +12,9 @@ public class RootLayout extends FrameLayout {
     private View mHeaderContainer;
     private View mListViewBackground;
     private boolean mInitialized = false;
+    private ObservableScrollView mScrollView;
+
+    private boolean doingLayout = false;
 
     public RootLayout (Context context) {
         super(context);
@@ -25,16 +28,25 @@ public class RootLayout extends FrameLayout {
         super(context, attrs, defStyle);
     }
 
+    public boolean isDoingLayout() {
+        return doingLayout;
+    }
+
     public void reset() {
         mInitialized = false;
     }
 
     protected void onLayout (boolean changed, int left, int top, int right, int bottom) {
+        doingLayout = true;
         //at first find headerViewContainer and listViewBackground
         if (mHeaderContainer == null)
             mHeaderContainer = findViewById(R.id.fab__header_container);
         if (mListViewBackground == null)
             mListViewBackground = findViewById(R.id.fab__listview_background);
+
+        if (mScrollView == null) {
+            mScrollView = (ObservableScrollView) findViewById(R.id.fab__scroll_view);
+        }
 
         //if there's no headerViewContainer then fallback to standard FrameLayout
         if (mHeaderContainer == null) {
@@ -57,6 +69,7 @@ public class RootLayout extends FrameLayout {
 
         //relayout
         super.onLayout(changed, left, top, right, bottom);
+        // Log.d(getClass().getSimpleName(), "onLayout header height: " + mHeaderContainer.getHeight());
 
         //revert header top position
         int headerTopCurrent = mHeaderContainer.getTop();
@@ -68,6 +81,19 @@ public class RootLayout extends FrameLayout {
         if (listViewBackgroundTopCurrent != listViewBackgroundTopPrevious) {
             mListViewBackground.offsetTopAndBottom(listViewBackgroundTopPrevious - listViewBackgroundTopCurrent);
         }
+        doingLayout = false;
+        if (mScrollView != null) {
+            mScrollView.post(scroller);
+        }
     }
+
+    private final Runnable scroller = new Runnable() {
+        @Override
+        public void run() {
+            int x = mScrollView.getScrollX();
+            int y = mScrollView.getScrollY();
+            mScrollView.onScrollChanged(x, y, x, y);
+        }
+    };
 
 }

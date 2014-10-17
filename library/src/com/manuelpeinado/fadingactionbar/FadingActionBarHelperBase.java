@@ -314,6 +314,9 @@ public abstract class FadingActionBarHelperBase implements OffsetMeasure {
     private int mLastScrollPosition;
 
     private void onNewScroll(int scrollPosition) {
+        if (rootLayout.isDoingLayout()) {
+            return;
+        }
         if (isActionBarNull()) {
             return;
         }
